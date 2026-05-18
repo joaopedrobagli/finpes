@@ -8,7 +8,7 @@ function agruparPorMes(transacoes: Transacao[]) {
 
   transacoes.forEach((t) => {
     const data = new Date(t.data)
-    const chave = `${data.getMonth() + 1}/${data.getFullYear()}`
+    const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}`
     const label = data.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })
 
     if (!meses[chave]) {
@@ -22,22 +22,19 @@ function agruparPorMes(transacoes: Transacao[]) {
     }
   })
 
+  // Ordena por ano e mês corretamente
   return Object.entries(meses)
-    .sort(([a], [b]) => {
-      const [ma, ya] = a.split('/').map(Number)
-      const [mb, yb] = b.split('/').map(Number)
-      return ya !== yb ? ya - yb : ma - mb
-    })
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([, v]) => v)
 }
 
 function TooltipCustom({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-xl p-3 shadow-lg text-sm" style={{ backgroundColor: '#1e293b', border: '1px solid #334155' }}>
-      <p className="font-semibold text-slate-200 mb-2">{label}</p>
+    <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 12 }}>
+      <p style={{ color: '#e2e8f0', fontWeight: 600, marginBottom: 8 }}>{label}</p>
       {payload.map((p: any) => (
-        <p key={p.name} style={{ color: p.fill }}>
+        <p key={p.name} style={{ color: p.fill, fontSize: 13 }}>
           {p.name}: {Number(p.value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
         </p>
       ))}
@@ -49,11 +46,10 @@ export function GraficoMensal({ transacoes }: { transacoes: Transacao[] }) {
   const dados = agruparPorMes(transacoes)
 
   return (
-    <div className="rounded-2xl p-6" style={{ backgroundColor: '#1e293b', border: '1px solid #334155' }}>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-base font-semibold text-slate-200">Receitas vs Despesas por Mês</h2>
-        <span className="text-xs text-slate-500">{new Date().getFullYear()}</span>
-      </div>
+    <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 16, padding: 24 }}>
+      <p style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 15, marginBottom: 24 }}>
+        Receitas vs Despesas por Mês
+      </p>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={dados} barGap={4}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />

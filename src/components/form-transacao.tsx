@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { Categoria, NovaTransacao } from '@/types'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Plus } from 'lucide-react'
 
 interface Props {
@@ -47,39 +45,55 @@ export function FormTransacao({ categorias, onSucesso }: Props) {
     onSucesso()
   }
 
-  const inputStyle = {
+  const inputStyle: React.CSSProperties = {
     backgroundColor: '#0f172a',
-    borderColor: '#334155',
+    border: '1px solid #334155',
+    borderRadius: 10,
     color: '#e2e8f0',
+    padding: '8px 12px',
+    fontSize: 14,
+    width: '100%',
+    outline: 'none',
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: 11,
+    color: '#64748b',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    marginBottom: 4,
+    display: 'block',
   }
 
   return (
-    <div className="rounded-2xl p-6" style={{ backgroundColor: '#1e293b', border: '1px solid #334155' }}>
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center">
-          <Plus size={14} className="text-white" />
+    <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 16, padding: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
+        <div style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Plus size={14} color="white" />
         </div>
-        <h2 className="text-base font-semibold text-slate-200">Nova Transação</h2>
+        <p style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 15 }}>Nova Transação</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {/* Toggle tipo */}
-        <div className="grid grid-cols-2 gap-2 p-1 rounded-xl" style={{ backgroundColor: '#0f172a' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: 4, backgroundColor: '#0f172a', borderRadius: 12 }}>
           {(['despesa', 'receita'] as const).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => { setTipo(t); setCategoriaId('') }}
-              className="py-2 rounded-lg text-sm font-medium transition-all"
-              style={
-                tipo === t
-                  ? {
-                      backgroundColor: '#1e293b',
-                      color: t === 'despesa' ? '#fb7185' : '#34d399',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                    }
-                  : { color: '#64748b' }
-              }
+              style={{
+                padding: '8px 0',
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 500,
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                backgroundColor: tipo === t ? '#1e293b' : 'transparent',
+                color: tipo === t ? (t === 'despesa' ? '#fb7185' : '#34d399') : '#64748b',
+                boxShadow: tipo === t ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
+              }}
             >
               {t === 'despesa' ? '↓ Despesa' : '↑ Receita'}
             </button>
@@ -87,37 +101,34 @@ export function FormTransacao({ categorias, onSucesso }: Props) {
         </div>
 
         <div>
-          <Label className="text-xs text-slate-500 uppercase tracking-wide mb-1 block">Descrição</Label>
-          <Input
+          <label style={labelStyle}>Descrição</label>
+          <input
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
             placeholder="Ex: Almoço no restaurante"
-            className="rounded-xl placeholder:text-slate-600"
-            style={inputStyle}
+            style={{ ...inputStyle }}
             required
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div>
-            <Label className="text-xs text-slate-500 uppercase tracking-wide mb-1 block">Valor</Label>
-            <Input
+            <label style={labelStyle}>Valor</label>
+            <input
               type="number"
               value={valor}
               onChange={(e) => setValor(e.target.value)}
               placeholder="0,00"
-              className="rounded-xl placeholder:text-slate-600"
               style={inputStyle}
               required
             />
           </div>
           <div>
-            <Label className="text-xs text-slate-500 uppercase tracking-wide mb-1 block">Data</Label>
-            <Input
+            <label style={labelStyle}>Data</label>
+            <input
               type="date"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              className="rounded-xl"
               style={inputStyle}
               required
             />
@@ -125,12 +136,11 @@ export function FormTransacao({ categorias, onSucesso }: Props) {
         </div>
 
         <div>
-          <Label className="text-xs text-slate-500 uppercase tracking-wide mb-1 block">Categoria</Label>
+          <label style={labelStyle}>Categoria</label>
           <select
             value={categoriaId}
             onChange={(e) => setCategoriaId(e.target.value)}
             required
-            className="w-full rounded-xl px-3 py-2 text-sm"
             style={inputStyle}
           >
             <option value="">Selecione uma categoria</option>
@@ -143,7 +153,18 @@ export function FormTransacao({ categorias, onSucesso }: Props) {
         <button
           type="submit"
           disabled={carregando}
-          className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all bg-blue-600 hover:bg-blue-500 disabled:opacity-50"
+          style={{
+            width: '100%',
+            padding: '12px 0',
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 600,
+            color: 'white',
+            backgroundColor: carregando ? '#334155' : '#3b82f6',
+            border: 'none',
+            cursor: carregando ? 'not-allowed' : 'pointer',
+            transition: 'background-color 0.2s',
+          }}
         >
           {carregando ? 'Salvando...' : 'Adicionar Transação'}
         </button>

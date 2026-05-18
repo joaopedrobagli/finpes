@@ -22,39 +22,41 @@ export function ListaTransacoes({ transacoes, onDeletar }: Props) {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#1e293b', border: '1px solid #334155' }}>
-      <div className="px-6 py-4" style={{ borderBottom: '1px solid #334155' }}>
-        <h2 className="text-base font-semibold text-slate-200">Transações</h2>
+    <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 16, overflow: 'hidden' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid #334155' }}>
+        <p style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 15 }}>Transações</p>
       </div>
 
       {transacoes.length === 0 ? (
-        <div className="px-6 py-12 text-center text-slate-600 text-sm">
+        <div style={{ padding: '48px 24px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
           Nenhuma transação encontrada
         </div>
       ) : (
-        <div className="divide-y max-h-96 overflow-y-auto" style={{ borderColor: '#334155' }}>
+        <div style={{ maxHeight: 384, overflowY: 'auto' }}>
           {transacoes.map((t) => (
             <div
               key={t.id}
-              className="flex items-center justify-between px-6 py-4 transition-colors group"
-              style={{ borderColor: '#334155' }}
+              className="group"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid #1e293b', cursor: 'default' }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0f172a')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             >
-              <div className="flex items-center gap-3">
-                <div className={`w-1 h-8 rounded-full ${t.tipo === 'receita' ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 3, height: 32, borderRadius: 4, backgroundColor: t.tipo === 'receita' ? '#10b981' : '#f43f5e' }} />
                 <div>
-                  <p className="text-sm font-medium text-slate-200">{t.descricao}</p>
-                  <p className="text-xs text-slate-500">{t.categorias?.nome} • {formatarData(t.data)}</p>
+                  <p style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 500 }}>{t.descricao}</p>
+                  <p style={{ color: '#475569', fontSize: 12, marginTop: 2 }}>{t.categorias?.nome} • {formatarData(t.data)}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className={`text-sm font-semibold ${t.tipo === 'receita' ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: t.tipo === 'receita' ? '#10b981' : '#f43f5e' }}>
                   {t.tipo === 'receita' ? '+' : '-'} {formatarMoeda(t.valor)}
                 </span>
                 <button
                   onClick={() => handleDeletar(t.id)}
-                  className="text-xs text-slate-700 hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"
+                  style={{ fontSize: 12, color: '#334155', background: 'none', border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f43f5e')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
                 >
                   excluir
                 </button>
