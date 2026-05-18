@@ -1,21 +1,17 @@
 'use client'
 
 import { Transacao } from '@/types'
-import { Button } from '@/components/ui/button'
 
-// Formata o valor para moeda brasileira
 function formatarMoeda(valor: number) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-// Formata a data para o padrão brasileiro
 function formatarData(data: string) {
   return new Date(data).toLocaleDateString('pt-BR')
 }
 
 interface Props {
   transacoes: Transacao[]
-  // Função chamada após deletar uma transação
   onDeletar: (id: string) => void
 }
 
@@ -25,39 +21,50 @@ export function ListaTransacoes({ transacoes, onDeletar }: Props) {
     onDeletar(id)
   }
 
-  if (transacoes.length === 0) {
-    return (
-      <div className="rounded-xl border p-6 text-center text-muted-foreground">
-        Nenhuma transação encontrada
-      </div>
-    )
-  }
-
   return (
-    <div className="rounded-xl border">
-      <div className="p-6 border-b">
-        <h2 className="text-lg font-semibold">Transações</h2>
+    <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 16, overflow: 'hidden' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid #334155' }}>
+        <p style={{ color: '#e2e8f0', fontWeight: 600, fontSize: 15 }}>Transações</p>
       </div>
-      <div className="divide-y">
-        {transacoes.map((t) => (
-          <div key={t.id} className="flex items-center justify-between p-4">
-            <div>
-              <p className="font-medium">{t.descricao}</p>
-              <p className="text-sm text-muted-foreground">
-                {t.categorias?.nome} • {formatarData(t.data)}
-              </p>
+
+      {transacoes.length === 0 ? (
+        <div style={{ padding: '48px 24px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
+          Nenhuma transação encontrada
+        </div>
+      ) : (
+        <div style={{ maxHeight: 384, overflowY: 'auto' }}>
+          {transacoes.map((t) => (
+            <div
+              key={t.id}
+              className="group"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: '1px solid #1e293b', cursor: 'default' }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0f172a')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 3, height: 32, borderRadius: 4, backgroundColor: t.tipo === 'receita' ? '#10b981' : '#f43f5e' }} />
+                <div>
+                  <p style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 500 }}>{t.descricao}</p>
+                  <p style={{ color: '#475569', fontSize: 12, marginTop: 2 }}>{t.categorias?.nome} • {formatarData(t.data)}</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: t.tipo === 'receita' ? '#10b981' : '#f43f5e' }}>
+                  {t.tipo === 'receita' ? '+' : '-'} {formatarMoeda(t.valor)}
+                </span>
+                <button
+                  onClick={() => handleDeletar(t.id)}
+                  style={{ fontSize: 12, color: '#334155', background: 'none', border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f43f5e')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
+                >
+                  excluir
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className={`font-semibold ${t.tipo === 'receita' ? 'text-green-600' : 'text-red-600'}`}>
-                {t.tipo === 'receita' ? '+' : '-'} {formatarMoeda(t.valor)}
-              </span>
-              <Button variant="ghost" size="sm" onClick={() => handleDeletar(t.id)}>
-                Excluir
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
