@@ -32,8 +32,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: '#0f172a' }}>
 
-      {/* Sidebar */}
-      <aside className="w-72 min-h-screen flex flex-col fixed left-0 top-0 p-6 border-r" style={{ backgroundColor: '#0f172a', borderColor: '#1e293b' }}>
+      {/* Sidebar — só aparece no desktop */}
+      <aside className="hidden lg:flex w-72 min-h-screen flex-col fixed left-0 top-0 p-6 border-r" style={{ backgroundColor: '#0f172a', borderColor: '#1e293b' }}>
         <div className="mb-10 px-2">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
@@ -94,9 +94,37 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* Conteúdo */}
-      <main className="ml-72 flex-1 p-8 space-y-6" style={{ backgroundColor: '#0f172a' }}>
-        <div>
+      {/* Conteúdo principal */}
+      <main className="lg:ml-72 flex-1 p-4 lg:p-8 space-y-6" style={{ backgroundColor: '#0f172a' }}>
+
+        {/* Header mobile — só aparece no mobile */}
+        <div className="flex items-center gap-3 lg:hidden mb-2">
+          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+            <Wallet size={16} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white">FinPes</h1>
+            <p className="text-xs text-slate-500">Finanças pessoais</p>
+          </div>
+        </div>
+
+        {/* Cards de resumo no mobile */}
+        <div className="grid grid-cols-3 gap-3 lg:hidden">
+          <div className="rounded-xl p-3" style={{ backgroundColor: '#1e293b' }}>
+            <p className="text-xs text-slate-400 mb-1">Receitas</p>
+            <p className="text-sm font-bold text-emerald-400">{formatarMoeda(resumo.totalReceitas)}</p>
+          </div>
+          <div className="rounded-xl p-3" style={{ backgroundColor: '#1e293b' }}>
+            <p className="text-xs text-slate-400 mb-1">Despesas</p>
+            <p className="text-sm font-bold text-rose-400">{formatarMoeda(resumo.totalDespesas)}</p>
+          </div>
+          <div className="rounded-xl p-3" style={{ backgroundColor: '#1d4ed8' }}>
+            <p className="text-xs text-blue-200 mb-1">Saldo</p>
+            <p className="text-sm font-bold text-white">{formatarMoeda(resumo.saldo)}</p>
+          </div>
+        </div>
+
+        <div className="hidden lg:block">
           <h2 className="text-2xl font-bold text-white">Dashboard</h2>
           <p className="text-sm text-slate-500 mt-1">Visão geral das suas finanças</p>
         </div>
